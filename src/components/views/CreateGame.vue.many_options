@@ -1,0 +1,108 @@
+<template>
+<v-container fluid fill-height text-xs-center>
+  <v-layout row wrap align-center>
+    <v-dialog v-model="wordListDialog" scrollable max-width="500px">
+      <v-card>
+        <v-card-title>
+          <v-flex xs10>
+            {{ this.word_list }}
+          </v-flex>
+          <v-flex xs2>
+            ({{ this.current_word_list_items.length }} words)
+          </v-flex>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text style="height: 300px;">
+          <p class="mt-0 mb-0" v-for="item in current_word_list_items"> {{ item }}</p>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn right color="blue darken-1" flat @click.native="wordListDialog = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-flex xs12 md6 offset-md3>
+      <v-card>
+        <v-card-text>
+          <v-container fluid>
+            <v-layout row wrap>
+              <v-flex xs12>
+                <v-switch v-model="createWordList" label="Create a new word list"></v-switch>
+              </v-flex>
+              <v-flex xs9>
+                <v-select v-bind:items="word_lists" v-model="word_list" label="Select Word List"
+                          v-if="!createWordList"></v-select>
+                
+              </v-flex>
+              <v-flex xs3 text-xs-right>
+                <v-btn flat v-if="!createWordList" @click.stop="wordListDialog = true">View words</v-btn>
+              </v-flex>
+              <v-flex xs12>
+                <v-switch v-model="playersSubmit" label="Players submit words"
+                          v-if="createWordList"></v-switch>
+                <v-text-field name="wordListInput" label="Comma separated list of words" multi-line
+                              v-if="!playersSubmit & createWordList"></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field label="# Words Per Player" name="wordsPerPlayer" type="number"
+                              v-model="numWordsPerPlayer"
+                              v-if="playersSubmit"></v-text-field>
+              </v-flex>
+              <v-flex xs12 text-xs-right>
+                <v-btn v-if="!playersSubmit & createWordList">Add from existing word lists</v-btn>
+                <v-btn v-if="!playersSubmit & createWordList">Save</v-btn>
+              </v-flex>
+              <v-flex xs9>
+                <v-slider v-bind:max="current_word_list_items.length" v-model="numWords" label="# Words"
+                          v-if="!playersSubmit"></v-slider>
+              </v-flex>
+              <v-flex xs2>
+                <v-text-field v-model="numWords"  v-if="!playersSubmit"></v-text-field>
+              </v-flex>
+              <v-flex xs1 text-xs-right>
+                <p class="mt-4" v-if="!playersSubmit">/{{ current_word_list_items.length }}</p>
+              </v-flex>
+              
+              <v-flex xs12>
+                <v-btn block class="mt-5">Start Game</v-btn>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-flex>
+  </v-layout>
+</v-container>
+</template>
+<script>
+export default {
+  data: () => ({
+    valid: true,
+    select: null,
+    createWordList: false,
+    playersSubmit: false,
+    numWords: 0,
+    word_list: 'Shrek 1',
+    wordListDialog: false,
+    numWordsPerPlayer: 3,
+    word_lists: [
+      'Shrek 1',
+      'Shrek 2',
+      'Shrek 3',
+      'Combination',
+    ],
+    current_word_list_items: [
+      'asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something','asdf','blah','huh','something',
+      ],
+    checkbox: false
+  }),
+  methods: {
+    showWordsDialog() {
+      //alert ("TEST");
+    }
+  }
+}
+</script>
+<style>
+</style>
