@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, join_room, leave_room, send, emit
 import random, string
 from saladbowl.saladbowl_game import Saladbowl_game
+import json
 
 DATA_NUM_WORDS_PER_PLAYER="numWordsPerPlayer"
 DATA_USERNAME="username"
@@ -35,13 +36,17 @@ def get_unique_room_id():
 @socketio.on('create')
 def on_create(data):
     room_id = get_unique_room_id()
-    ROOMS[room_id] = Saladbowl_game(game_id=room_id,
+    cur_user=data[DATA_USERNAME]
+    new_game = Saladbowl_game(room_id=room_id,
                                     num_words_per_player=int(data[DATA_NUM_WORDS_PER_PLAYER]),
-                                    players=[data[DATA_USERNAME]])
+                                    players=[cur_user],
+                                    word_list=['test','asdf'])
+    ROOMS[room_id] = new_game
     join_room(room_id)
-    #ROOMS[room_id] = {'num_people':3, 'game_id':room_id}
+    #ROOMS[room_id] = {'num_people':3, 'room_id':room_id}
     print ("CREATED " + room_id)
-    emit ('join_room', {'room_id' : room_id})
+    print (json.dumps(new_game.to_dic()))
+    emit ('join_room', new_game.to_dic())
     
 @socketio.on('join')
 def on_join(data):
@@ -51,9 +56,9 @@ def on_join(data):
         print ("EMITTING ERROR")
         emit ('error', {'error': 'Unable to join room. Room does not exist.'})
     else:
-        if data[DATA_USERNAME] in ROOMS[data[DATA_ROOM_ID]].players:
-            print ("User already exists in room")
-            emit ('error', {'error': 'Unable to join room. A user with that name is currently connected.'})
+        # if data[DATA_USERNAME] in ROOMS[data[DATA_ROOM_ID]].players:
+        #     print ("User already exists in room")
+        #     emit ('error', {'error': 'Unable to join room. A user with that name is currently connected.'})
         print ("EMITTING JOIN ROOM")
         ROOMS[data[DATA_ROOM_ID]].players.append(data[DATA_USERNAME])
         emit ('join_room', {'room_id' : room_id })
@@ -63,7 +68,7 @@ def on_leave(data):
     send('left', room='a')
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=8001, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
 
 #def app(environ, start_response):
 #    """Simplest possible application object"""

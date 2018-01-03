@@ -6,11 +6,11 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     connected: false,
-    room_id: '',
     error: '',
+    room_id: '',
     num_words_per_player: '',
     players: [],
-    cur_player: '',
+    username: '',
     word_list: [],
     game: {},
   },
@@ -26,16 +26,21 @@ export default new Vuex.Store({
       console.log("DISCONNECT");
     },
     SOCKET_MESSAGE(state, message) {
-      // state.num_people = message.num_people;
+      state.game = message;
       state.room_id = message.room_id;
+      state.players = message.players;
+      state.word_list = message.word_list;
       state.error = null;
-      console.log("GOT MESSAGE ROOM: " + state.room_id);
-      //console.log("GOT MESSAGE ERROR: " + state.error);
+
+      console.log("GOT MESSAGE ROOM2: " + message.room_id);
+
     },
     SOCKET_JOIN_ROOM(state, message) {
-      state.error = null;
+      state.game = message;
       state.room_id = message.room_id;
-      console.log("GOT JOIN ROOM: " + message.room_id);
+      state.players = message.players;
+      state.word_list = message.word_list;
+      state.error = null;
     },
     SOCKET_ERROR(state, message) {
       console.log("GOT ERROR: " + message.error);
@@ -44,5 +49,11 @@ export default new Vuex.Store({
     set_room_id(state, room_id) {
       state.room_id = room_id;
     },
+    set_username(state, username) {
+      state.username = username;
+    },
+    set_game(state, game) {
+      state.game = game;
+    }
   },
 });
