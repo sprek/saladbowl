@@ -5,8 +5,8 @@
       <v-layout row wrap>
         <v-flex xs12>
           <v-form v-model="valid">
-          <v-text-field v-model="username" label="Username" required :rules="[v => !!v || 'Item is required']"></v-text-field>
-          <v-text-field v-model="reqRoomId" label="Room ID" mask="AAAA" required :rules="[v => !!v || 'Item is required']"></v-text-field>
+            <v-text-field v-model="reqUsername" label="Username" required :rules="[v => !!v || 'Item is required']"></v-text-field>
+            <v-text-field v-model="reqRoomId" label="Room ID" mask="AAAA" required :rules="[v => !!v || 'Item is required']"></v-text-field>
           </v-form>
         </v-flex>
         <v-flex xs12>
@@ -24,13 +24,13 @@ export default {
   name: 'join-form',
   data() {
     return {
-      username: '',
+      reqUsername: '',
       reqRoomId: '',
       valid: false,
     };
   },
   computed: {
-    ...mapState(['room_id']),
+    ...mapState(['room_id', 'username']),
   },
   watch: {
     room_id() {
@@ -40,10 +40,12 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(['set_username']),
     joinGame() {
       if (!this.valid) return;
+      this.set_username(this.reqUsername);
       const params = {
-        username: this.username,
+        username: this.reqUsername,
         room_id: this.reqRoomId,
       };
       console.log ("JOINING ROOM: " + params.room_id);

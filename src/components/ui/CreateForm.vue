@@ -4,9 +4,11 @@
     <v-container fluid>
       <v-layout row wrap>
         <v-flex xs12>
-          <v-text-field v-model="reqUsername" label="User Name"></v-text-field>
-          <v-select v-bind:items="numWordsOptions" v-model="numWordsPerPlayer"
-                    label="Number of words per player"></v-select>
+          <v-form v-model="valid">
+            <v-text-field v-model="reqUsername" label="User Name" required :rules="[v => !!v || 'Item is required']"></v-text-field>
+            <v-select v-bind:items="numWordsOptions" v-model="numWordsPerPlayer"
+                      label="Number of words per player"></v-select>
+          </v-form>
         </v-flex>
         <v-flex xs12>
           <v-btn block class="mt-3" @click.stop="createGame">Start Game</v-btn>
@@ -26,6 +28,7 @@ export default {
       reqUsername: '',
       numWordsPerPlayer: 3,
       numWordsOptions: [1,2,3,4,5],
+      valid: false,
     };
   },
   computed: {
@@ -33,13 +36,17 @@ export default {
   },
   watch: {
     game() {
-      console.log ("SETTING ROOM ID: " + this.room_id + " USER: " + this.username + " GAME: " + this.game.room_id + " GAME2: " + this.game.username);
-      //this.set_room_id(this.room_id);
+      console.log ("REQ USERNAME IS: " + this.reqUsername);
+      console.log ("SETTING ROOM ID: " + this.room_id);
+      this.set_username(this.reqUsername);
       this.$router.push({name: 'Game', params: {room_id: this.room_id } });
     },
   },
   methods: {
+    ...mapMutations(['set_username']),
     createGame() {
+      if (!this.valid) return;
+      console.log ("CREATING GAME WITH: " + this.reqUsername + ", " + this.numWordsPerPlayer);
       const params = {
         username: this.reqUsername,
         numWordsPerPlayer: this.numWordsPerPlayer,

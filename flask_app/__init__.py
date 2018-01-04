@@ -46,6 +46,7 @@ def on_create(data):
     #ROOMS[room_id] = {'num_people':3, 'room_id':room_id}
     print ("CREATED " + room_id)
     print (json.dumps(new_game.to_dic()))
+    new_game.numtest = new_game.numtest + 1
     emit ('join_room', new_game.to_dic())
     
 @socketio.on('join')
@@ -60,8 +61,12 @@ def on_join(data):
         #     print ("User already exists in room")
         #     emit ('error', {'error': 'Unable to join room. A user with that name is currently connected.'})
         print ("EMITTING JOIN ROOM")
-        ROOMS[data[DATA_ROOM_ID]].players.append(data[DATA_USERNAME])
-        emit ('join_room', {'room_id' : room_id })
+        game = ROOMS[data[DATA_ROOM_ID]]
+        game.players.append(data[DATA_USERNAME])
+        game.numtest = game.numtest + 1
+        print (json.dumps(game.to_dic()))
+        emit ('join_room', game.to_dic())
+        # need to create new channel
 
 @socketio.on('leave')
 def on_leave(data):
