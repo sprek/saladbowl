@@ -9,7 +9,7 @@
               <h4>Logged in as: {{ username }}</h4>
             </v-flex>
             <v-flex xs6 text-xs-right>
-              <h4># Players: {{numtest}}</h4>
+              <h4># Players: {{players.length}}</h4>
             </v-flex>
           </v-layout row wrap>
         </v-container>
@@ -40,18 +40,18 @@ export default {
   },
   data() {
     return {
-      numPlayers: 1,
+      //numPlayers: 1,
     }
   },
-  watch: {
-    game() {
-      console.log ("GOT GAME UPDATE");
-      this.numPlayers = this.game.players.length;
-    },
-    numtest() {
-      console.log ("GOT NUMTEST UPDATE");
-    },
-  },
+  // watch: {
+  //   game() {
+  //     console.log ("GOT GAME UPDATE");
+  //     this.numPlayers = this.game.players.length;
+  //   },
+  //   numtest() {
+  //     console.log ("GOT NUMTEST UPDATE");
+  //   },
+  // },
   mounted() {
     //if (!this.username) this.set_username('unknown');
     //const params = {

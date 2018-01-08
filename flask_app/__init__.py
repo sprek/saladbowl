@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, join_room, leave_room, send, emit
 import random, string
 from saladbowl.saladbowl_game import Saladbowl_game
@@ -46,7 +46,6 @@ def on_create(data):
     #ROOMS[room_id] = {'num_people':3, 'room_id':room_id}
     print ("CREATED " + room_id)
     print (json.dumps(new_game.to_dic()))
-    new_game.numtest = new_game.numtest + 1
     emit ('join_room', new_game.to_dic())
     
 @socketio.on('join')
@@ -63,14 +62,24 @@ def on_join(data):
         print ("EMITTING JOIN ROOM")
         game = ROOMS[data[DATA_ROOM_ID]]
         game.players.append(data[DATA_USERNAME])
-        game.numtest = game.numtest + 1
         print (json.dumps(game.to_dic()))
-        emit ('join_room', game.to_dic())
+        #emit ('join_room', game.to_dic())
+        join_room(room_id)
+        send(ROOMS[room_id].to_dic(), room=room_id)
         # need to create new channel
 
 @socketio.on('leave')
 def on_leave(data):
-    send('left', room='a')
+    room_id = data['room']
+    user = data['username']
+    print ("LEFT ROOM " + room_id + " USER: " + user)
+    leave_room(room_id)
+    game = ROOMS[room_id]
+    try:
+        game.players.remove(user)
+    except ValueError:
+        print ("User " + username + " doesn't exist")
+    send(game.to_dic(), room=room_id)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)

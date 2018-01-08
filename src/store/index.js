@@ -13,7 +13,6 @@ export default new Vuex.Store({
     username: '',
     word_list: [],
     game: {},
-    numtest: 0,
   },
   mutations: {
     SOCKET_CONNECT(state) {
@@ -32,7 +31,6 @@ export default new Vuex.Store({
       state.error = null;
 
       console.log("GOT MESSAGE ROOM2: " + message.room_id);
-
     },
     SOCKET_JOIN_ROOM(state, message) {
       state.game = message;
@@ -40,7 +38,6 @@ export default new Vuex.Store({
       state.players = message.players;
       state.word_list = message.word_list;
       state.error = null;
-      state.numtest = message.numtest;
       console.log ("GOT JOIN ROOM MSG: " + message.room_id);
     },
     SOCKET_ERROR(state, message) {
