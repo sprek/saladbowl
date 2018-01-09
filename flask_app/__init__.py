@@ -37,9 +37,10 @@ def get_unique_room_id():
 def on_create(data):
     room_id = get_unique_room_id()
     cur_user=data[DATA_USERNAME]
+    sid = request.sid
     new_game = Saladbowl_game(room_id=room_id,
                                     num_words_per_player=int(data[DATA_NUM_WORDS_PER_PLAYER]),
-                                    players=[cur_user],
+                                    players={cur_user:[sid]},
                                     word_list=['test','asdf'])
     ROOMS[room_id] = new_game
     join_room(room_id)
@@ -51,7 +52,10 @@ def on_create(data):
 @socketio.on('join')
 def on_join(data):
     print ("ON JOIN")
-    room_id = data['room_id']
+    room_id = data[DATA_ROOM_ID]
+    username = data[DATA_USERNAME]
+    sid = request.sid
+    
     if not room_id in ROOMS:
         print ("EMITTING ERROR")
         emit ('error', {'error': 'Unable to join room. Room does not exist.'})
@@ -61,7 +65,8 @@ def on_join(data):
         #     emit ('error', {'error': 'Unable to join room. A user with that name is currently connected.'})
         print ("EMITTING JOIN ROOM")
         game = ROOMS[data[DATA_ROOM_ID]]
-        game.players.append(data[DATA_USERNAME])
+        #game.players.append(data[DATA_USERNAME])
+        game.add_id_to_player(username, sid)
         print (json.dumps(game.to_dic()))
         #emit ('join_room', game.to_dic())
         join_room(room_id)
