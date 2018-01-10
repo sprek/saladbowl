@@ -7,12 +7,14 @@ import json
 DATA_NUM_WORDS_PER_PLAYER="numWordsPerPlayer"
 DATA_USERNAME="username"
 DATA_ROOM_ID="room_id"
+DATA_WORD_LIST="word_list"
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.secret_key = b'FF\x90}\xdc\xc5\xaeaT\xd6\xbc\x86O\xa6B\xdd\xa2qp\x9e\xd2f\xe8\xe8'
 
 ROOMS = {}
+SID_TO_ROOM = {}
 
 @app.route('/stats')
 def stats():
@@ -39,11 +41,13 @@ def on_create(data):
     cur_user=data[DATA_USERNAME]
     sid = request.sid
     new_game = Saladbowl_game(room_id=room_id,
-                                    num_words_per_player=int(data[DATA_NUM_WORDS_PER_PLAYER]),
-                                    players={cur_user:[sid]},
-                                    word_list=['test','asdf'])
+                              num_words_per_player=int(data[DATA_NUM_WORDS_PER_PLAYER]),
+                              word_list=[])
+    new_game.add_id_to_player(cur_user, sid)
+    
     ROOMS[room_id] = new_game
     join_room(room_id)
+    SID_TO_ROOM[sid] = room_id
     #ROOMS[room_id] = {'num_people':3, 'room_id':room_id}
     print ("CREATED " + room_id)
     print (json.dumps(new_game.to_dic()))
@@ -70,21 +74,41 @@ def on_join(data):
         print (json.dumps(game.to_dic()))
         #emit ('join_room', game.to_dic())
         join_room(room_id)
+        SID_TO_ROOM[sid] = room_id
         send(ROOMS[room_id].to_dic(), room=room_id)
         # need to create new channel
 
+@socketio.on('disconnect')
+def on_disconnect():
+    print ("RECEIVED DISCONNECT")
+    sid = request.sid
+    if sid in SID_TO_ROOM:
+        cur_room_id = SID_TO_ROOM[sid]
+        print ("REMOVED USER: " + ROOMS[cur_room_id].get_player_from_id(sid))
+        ROOMS[cur_room_id].remove_player_id(sid)
+        SID_TO_ROOM.pop(sid)
+        send(ROOMS[cur_room_id].to_dic(), room=cur_room_id)
+
+@socketio.on('submit_words')
+def on_submit_words(data):
+    room_id = data[DATA_ROOM_ID]
+    username = data[DATA_USERNAME]
+    words = data[DATA_WORD_LIST]
+    print ("RECEIVED MESSAGE: {} {} WORDS: {}".format(room_id, username, words)
+             
 @socketio.on('leave')
 def on_leave(data):
-    room_id = data['room']
-    user = data['username']
-    print ("LEFT ROOM " + room_id + " USER: " + user)
-    leave_room(room_id)
-    game = ROOMS[room_id]
-    try:
-        game.players.remove(user)
-    except ValueError:
-        print ("User " + username + " doesn't exist")
-    send(game.to_dic(), room=room_id)
+    print ("LEFT ROOM: " + data['room'])
+    #room_id = data['room']
+    #user = data['username']
+    #print ("LEFT ROOM " + room_id + " USER: " + user)
+    #leave_room(room_id)
+    #game = ROOMS[room_id]
+    #try:
+    #    game.players.remove(user)
+    #except ValueError:
+    #    print ("User " + username + " doesn't exist")
+    #send(game.to_dic(), room=room_id)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)

@@ -13,9 +13,6 @@
         <v-flex xs12>
           <v-btn block class="mt-3" @click.stop="submitWords">Submit</v-btn>
         </v-flex>
-         <div v-for='n in 3'>
-        {{ wordFields[n] }}
-      </div>
       </v-layout>
     </v-container>
   </v-card-text>
@@ -34,7 +31,7 @@ export default {
     };
   },
   computed: {
-    //...mapState(['room_id', 'username', 'game']),
+    ...mapState(['room_id', 'username', 'game']),
   },
   watch: {
     game() {
@@ -46,6 +43,20 @@ export default {
   },
   methods: {
     submitWords() {
+      if (!valid) {
+        return;
+      }
+      
+      var remove_chars = word_list.map(function(e) {
+        e = e.replace(/,"/g,'');
+        return e;
+      });
+      const params = {
+        room_id: this.room_id
+        username: this.username,
+        word_list: this.remove_chars.join(',')
+      }
+      this.$socket.emit('submit_words', params);
     }
     //...mapMutations(['set_username']),
     //createGame() {
