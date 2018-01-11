@@ -19,7 +19,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations} from 'vuex';
+import { mapState, mapMutations } from 'vuex';
+
 export default {
   name: 'join-form',
   data() {
@@ -34,9 +35,9 @@ export default {
   },
   watch: {
     room_id() {
-      console.log ("SETTING ROOM ID: " + this.room_id);
-      //this.set_room_id(this.room_id);
-      this.$router.push({name: 'Game', params: {room_id: this.room_id } });
+      console.log(`SETTING ROOM ID: ${this.room_id}`);
+      // this.set_room_id(this.room_id);
+      this.$router.push({ name: 'Game', params: { room_id: this.room_id } });
     },
   },
   methods: {
@@ -48,11 +49,11 @@ export default {
         username: this.reqUsername,
         room_id: this.reqRoomId,
       };
-      console.log ("JOINING ROOM: " + params.room_id);
+      console.log(`JOINING ROOM: ${params.room_id}`);
       this.$socket.emit('join', params);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>

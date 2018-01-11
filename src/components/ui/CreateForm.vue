@@ -20,14 +20,15 @@
 </template>
 
 <script>
-import { mapState, mapMutations} from 'vuex';
+import { mapState, mapMutations } from 'vuex';
+
 export default {
   name: 'create-form',
   data() {
     return {
       reqUsername: '',
       numWordsPerPlayer: 3,
-      numWordsOptions: [1,2,3,4,5],
+      numWordsOptions: [1, 2, 3, 4, 5],
       valid: false,
     };
   },
@@ -36,25 +37,25 @@ export default {
   },
   watch: {
     game() {
-      console.log ("REQ USERNAME IS: " + this.reqUsername);
-      console.log ("SETTING ROOM ID: " + this.room_id);
+      console.log(`REQ USERNAME IS: ${this.reqUsername}`);
+      console.log(`SETTING ROOM ID: ${this.room_id}`);
       this.set_username(this.reqUsername);
-      this.$router.push({name: 'Game', params: {room_id: this.room_id } });
+      this.$router.push({ name: 'Game', params: { room_id: this.room_id } });
     },
   },
   methods: {
     ...mapMutations(['set_username']),
     createGame() {
       if (!this.valid) return;
-      console.log ("CREATING GAME WITH: " + this.reqUsername + ", " + this.numWordsPerPlayer);
+      console.log(`CREATING GAME WITH: ${this.reqUsername}, ${this.numWordsPerPlayer}`);
       const params = {
         username: this.reqUsername,
         numWordsPerPlayer: this.numWordsPerPlayer,
       };
       this.$socket.emit('create', params);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style>
 </style>

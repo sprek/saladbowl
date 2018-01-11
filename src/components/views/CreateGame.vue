@@ -12,8 +12,9 @@
 </template>
 
 <script>
-  import CreateForm from '@/components/ui/CreateForm';
-  export default {
+import CreateForm from '@/components/ui/CreateForm';
+
+export default {
   name: 'CreateGame',
   components: {
     CreateForm,
@@ -24,7 +25,7 @@
   },
   methods: {
   },
-}
+};
 </script>
 
 <style>

@@ -31,7 +31,7 @@
 
 <script>
 import WordSubmitForm from '@/components/ui/WordSubmitForm';
-import { mapState, mapMutations, mapGetters} from 'vuex';
+import { mapState } from 'vuex';
 
 export default {
   name: 'game-board',
@@ -40,8 +40,7 @@ export default {
   },
   data() {
     return {
-      //numPlayers: 1,
-    }
+    };
   },
   // watch: {
   //   game() {
@@ -53,17 +52,12 @@ export default {
   //   },
   // },
   mounted() {
-    //if (!this.username) this.set_username('unknown');
-    //const params = {
-    //  username: this.username,
-    //  room_id: this.room_id,
-    //};
     if (!this.room_id) {
-      this.$router.push({name: 'JoinGame', params: {reqRoomId: this.$route.params.room_id } });
+      this.$router.push({ name: 'JoinGame', params: { reqRoomId: this.$route.params.room_id } });
     }
   },
   computed: {
-    ...mapState(['connected','room_id','error', 'players', 'username', 'game', 'numtest']),
+    ...mapState(['connected', 'room_id', 'error', 'players', 'username', 'game', 'numtest']),
   },
   methods: {
   },

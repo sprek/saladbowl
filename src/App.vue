@@ -38,42 +38,41 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
-  
+import { mapState } from 'vuex';
+
 export default {
   name: 'app',
-  data () {
+  data() {
     return {
       drawer: false,
-      title: "Salad Bowl",
+      title: 'Salad Bowl',
       items: [
         { title: 'Home', icon: 'home' },
         { title: 'Word List', icon: 'list' },
-        { title: 'Games', icon: 'games' }
+        { title: 'Games', icon: 'games' },
       ],
       toolbar_items: [
         { title: 'Word List', icon: 'list', route: 'WordList' },
-        { title: 'Home', icon: 'home', route: 'Home' }
-      ]
-    }
+        { title: 'Home', icon: 'home', route: 'Home' },
+      ],
+    };
   },
   computed: {
-    ...mapState(['connected','room','error']),
+    ...mapState(['connected', 'room', 'error']),
     dynamic_title: function () {
-      if (this.$route.path === "/") {
-        return "Salad Bowl";
-      } else if (this.$route.path === "/word_list") {
-        return "Word List";
-      } else if (this.$route.path === "/create_game") {
-        return "Salad Bowl"; 
-      } else if (this.$route.path === "/join_game") {
-        return "Salad Bowl"; 
-      }else if (this.$route.path.substring(0,5) === "/game") {
-        return "Game: " + this.$route.path.substring(6);
-      } else {
-        return this.$route.path;
+      if (this.$route.path === '/') {
+        return 'Salad Bowl';
+      } else if (this.$route.path === '/word_list') {
+        return 'Word List';
+      } else if (this.$route.path === '/create_game') {
+        return 'Salad Bowl';
+      } else if (this.$route.path === '/join_game') {
+        return 'Salad Bowl';
+      } else if (this.$route.path.substring(0, 5) === '/game') {
+        return `Game: ${this.$route.path.substring(6)}`;
       }
-    }
+      return this.$route.path;
+    },
   },
 };
 </script>

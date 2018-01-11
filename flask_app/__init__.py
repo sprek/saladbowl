@@ -94,7 +94,7 @@ def on_submit_words(data):
     room_id = data[DATA_ROOM_ID]
     username = data[DATA_USERNAME]
     words = data[DATA_WORD_LIST]
-    print ("RECEIVED MESSAGE: {} {} WORDS: {}".format(room_id, username, words)
+    print ("RECEIVED MESSAGE: {} {} WORDS: {}".format(room_id, username, words))
              
 @socketio.on('leave')
 def on_leave(data):

@@ -20,7 +20,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations} from 'vuex';
+import { mapState } from 'vuex';
+
 export default {
   name: 'word-submit-form',
   data() {
@@ -35,40 +36,33 @@ export default {
   },
   watch: {
     game() {
-      //console.log ("REQ USERNAME IS: " + this.reqUsername);
-      //console.log ("SETTING ROOM ID: " + this.room_id);
-      //this.set_username(this.reqUsername);
-      //this.$router.push({name: 'Game', params: {room_id: this.room_id } });
+      // console.log ("REQ USERNAME IS: " + this.reqUsername);
+      // console.log ("SETTING ROOM ID: " + this.room_id);
+      // this.set_username(this.reqUsername);
+      // this.$router.push({name: 'Game', params: {room_id: this.room_id } });
     },
   },
   methods: {
     submitWords() {
-      if (!valid) {
+      if (!this.valid) {
         return;
       }
-      
-      var remove_chars = word_list.map(function(e) {
-        e = e.replace(/,"/g,'');
-        return e;
+
+      const remove_chars = this.wordFields.map((e) => {
+        // get rid of semicolons, since we'll be using them to separate the entries
+        const n = e.replace(/;/g, '');
+        return n;
       });
+
       const params = {
-        room_id: this.room_id
+        room_id: this.room_id,
         username: this.username,
-        word_list: this.remove_chars.join(',')
-      }
+        word_list: remove_chars.join(';'),
+      };
       this.$socket.emit('submit_words', params);
-    }
-    //...mapMutations(['set_username']),
-    //createGame() {
-    //  console.log ("CREATING GAME WITH: " + this.reqUsername + ", " + this.numWordsPerPlayer);
-    //  const params = {
-    //    username: this.reqUsername,
-    //    numWordsPerPlayer: this.numWordsPerPlayer,
-    //  };
-    //  this.$socket.emit('create', params);
-    //}
-  }
-}
+    },
+  },
+};
 </script>
 <style>
 </style>

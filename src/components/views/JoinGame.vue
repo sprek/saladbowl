@@ -12,8 +12,8 @@
 </template>
 
 <script>
-//import { mapState, mapMutations} from 'vuex';
 import JoinForm from '@/components/ui/JoinForm';
+
 export default {
   name: 'JoinGame',
   components: {
@@ -23,12 +23,7 @@ export default {
     return {
     };
   },
-  //methods: {
-  //  joinGame() {
-  //    //this.$socket.emit('create', params);
-  //  }
-  //}
-}
+};
 </script>
 <style>
 </style>

@@ -17,11 +17,11 @@ export default new Vuex.Store({
   mutations: {
     SOCKET_CONNECT(state) {
       state.connected = true;
-      console.log("CONNECT");
+      console.log('CONNECT');
     },
     SOCKET_DISCONNECT(state) {
       state.connected = false;
-      console.log("DISCONNECT");
+      console.log('DISCONNECT');
     },
     SOCKET_MESSAGE(state, message) {
       state.game = message;
@@ -30,7 +30,7 @@ export default new Vuex.Store({
       state.word_list = message.word_list;
       state.error = null;
 
-      console.log("GOT MESSAGE ROOM2: " + message.room_id);
+      console.log(`GOT MESSAGE ROOM2: ${message.room_id}`);
     },
     SOCKET_JOIN_ROOM(state, message) {
       state.game = message;
@@ -38,10 +38,10 @@ export default new Vuex.Store({
       state.players = message.players;
       state.word_list = message.word_list;
       state.error = null;
-      console.log ("GOT JOIN ROOM MSG: " + message.room_id);
+      console.log(`GOT JOIN ROOM MSG: ${message.room_id}`);
     },
     SOCKET_ERROR(state, message) {
-      console.log("GOT ERROR: " + message.error);
+      console.log(`GOT ERROR: ${message.error}`);
       state.error = message.error;
     },
     set_room_id(state, room_id) {
@@ -52,6 +52,6 @@ export default new Vuex.Store({
     },
     set_game(state, game) {
       state.game = game;
-    }
+    },
   },
 });
