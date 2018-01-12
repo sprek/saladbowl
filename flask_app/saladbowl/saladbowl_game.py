@@ -1,3 +1,4 @@
+import saladbowl.saladbowl_player
 from saladbowl.saladbowl_player import Saladbowl_player
 
 GS_WAITING_FOR_WORDS="WAITING_FOR_WORDS"
@@ -12,15 +13,19 @@ class Saladbowl_game(object):
         self.word_list = word_list
         self.players_by_username = {}
         self.game_state = GS_WAITING_FOR_WORDS
+        self.player_counter = 0
         if word_list:
             # if we already have a word list, then the players just need to hit start
             self.game_state = GS_WAITING_TO_START
-            
+
+    def get_sorted_players(self):
+        return sorted([x for _,x in self.players_by_username.items()])
 
     def to_dic(self):
         return {
             "room_id": self.room_id,
-            "players": list(self.players_by_username.keys()),
+            "players": [x.username for x in self.get_sorted_players()],
+            "player_teams": [x.team for x in self.get_sorted_players()],
             "word_list": self.word_list,
             "game_state": self.game_state
         }
@@ -46,7 +51,12 @@ class Saladbowl_game(object):
             if not player_id in cur_player.id_list:
                 cur_player.id_list.append(player_id)
         else:
-            self.players_by_username[username] = Saladbowl_player(username, [player_id], False)
+            tmp_player = Saladbowl_player(username, [player_id], False, self.player_counter)
+            self.player_counter += 1
+            
+            if len(self.players_by_username) % 2 == 1:
+                tmp_player.team = Saladbowl_player.TEAM_RED
+            self.players_by_username[username] = tmp_player
 
     def get_player(self, username):
         """

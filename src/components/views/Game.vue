@@ -14,12 +14,22 @@
           </v-layout row wrap>
         </v-container>
       </v-card>
-      <v-card>
+      <v-card class="mt-3">
         <v-container fluid>
           <v-layout row wrap text-xs-left>
             <v-flex xs12>
               <h1 class="white--text">Submit Words / Phrases</h1>
               <word-submit-form></word-submit-form>
+            </v-flex>
+          </v-layout row wrap>
+        </v-container>
+      </v-card>
+      <v-card class="mt-3">
+        <v-container fluid>
+          <v-layout row wrap text-xs-left>
+            <v-flex xs12>
+              <h1 class="white--text">Players</h1>
+              <player-teams></player-teams>
             </v-flex>
           </v-layout row wrap>
         </v-container>
@@ -31,12 +41,14 @@
 
 <script>
 import WordSubmitForm from '@/components/ui/WordSubmitForm';
+import PlayerTeams from '@/components/ui/PlayerTeams';
 import { mapState } from 'vuex';
 
 export default {
   name: 'game-board',
   components: {
     WordSubmitForm,
+    PlayerTeams,
   },
   data() {
     return {
@@ -57,7 +69,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['connected', 'room_id', 'error', 'players', 'username', 'game', 'numtest']),
+    ...mapState(['connected', 'room_id', 'error', 'players', 'username', 'game', 'player_teams']),
   },
   methods: {
   },

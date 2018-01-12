@@ -10,6 +10,7 @@ export default new Vuex.Store({
     room_id: '',
     num_words_per_player: '',
     players: [],
+    player_teams: [],
     username: '',
     word_list: [],
     game: {},
@@ -27,6 +28,7 @@ export default new Vuex.Store({
       state.game = message;
       state.room_id = message.room_id;
       state.players = message.players;
+      state.player_teams = message.player_teams;
       state.word_list = message.word_list;
       state.error = null;
 
@@ -36,6 +38,7 @@ export default new Vuex.Store({
       state.game = message;
       state.room_id = message.room_id;
       state.players = message.players;
+      state.player_teams = message.player_teams;
       state.word_list = message.word_list;
       state.error = null;
       console.log(`GOT JOIN ROOM MSG: ${message.room_id}`);

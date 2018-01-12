@@ -35,6 +35,13 @@ def get_unique_room_id():
         new_room = create_room_id()
     return new_room
 
+# def add_player_to_game(game, username, sid):
+#     game.add_id_to_player(username, sid)
+#     if len(game.players_by_username) % 2 == 0:
+#         player = game.get_player(username)
+#         player.team = saladbowl_player.TEAM_RED
+#         player.order = len(
+
 @socketio.on('create')
 def on_create(data):
     room_id = get_unique_room_id()
@@ -84,7 +91,7 @@ def on_disconnect():
     sid = request.sid
     if sid in SID_TO_ROOM:
         cur_room_id = SID_TO_ROOM[sid]
-        print ("REMOVED USER: " + ROOMS[cur_room_id].get_player_from_id(sid))
+        print ("REMOVED USER: " + ROOMS[cur_room_id].get_player_from_id(sid).username)
         ROOMS[cur_room_id].remove_player_id(sid)
         SID_TO_ROOM.pop(sid)
         send(ROOMS[cur_room_id].to_dic(), room=cur_room_id)
