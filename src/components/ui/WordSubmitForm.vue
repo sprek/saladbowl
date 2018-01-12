@@ -5,11 +5,11 @@
       <v-layout row wrap>
         <v-flex xs12>
           <v-form v-model="valid">
-          <template v-for="n in numWordsPerPlayer">
-            <v-text-field v-model="wordFields[n]" label="Enter Word or Phrase" required :rules="[v => !!v || 'Item is required']"></v-text-field>
-          </template>
+            <template v-for="n in numWordsPerPlayer">
+              <v-text-field v-model="wordFields[n-1]" label="Enter Word or Phrase" required :rules="[v => !!v || 'Item is required']"></v-text-field>
+            </template>
           </v-form>
-       </v-flex>
+        </v-flex>
         <v-flex xs12>
           <v-btn block class="mt-3" @click.stop="submitWords">Submit</v-btn>
         </v-flex>
@@ -47,6 +47,9 @@ export default {
       if (!this.valid) {
         return;
       }
+
+      console.log(`${this.wordFields.join(';')}`);
+      console.log(`${this.wordFields.length}`);
 
       const remove_chars = this.wordFields.map((e) => {
         // get rid of semicolons, since we'll be using them to separate the entries
