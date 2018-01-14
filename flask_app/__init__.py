@@ -88,13 +88,13 @@ def on_join(data):
 @socketio.on('disconnect')
 def on_disconnect():
     print ("RECEIVED DISCONNECT")
-    sid = request.sid
-    if sid in SID_TO_ROOM:
-        cur_room_id = SID_TO_ROOM[sid]
-        print ("REMOVED USER: " + ROOMS[cur_room_id].get_player_from_id(sid).username)
-        ROOMS[cur_room_id].remove_player_id(sid)
-        SID_TO_ROOM.pop(sid)
-        send(ROOMS[cur_room_id].to_dic(), room=cur_room_id)
+    #sid = request.sid
+    #if sid in SID_TO_ROOM:
+    #    cur_room_id = SID_TO_ROOM[sid]
+    #    print ("REMOVED USER: " + ROOMS[cur_room_id].get_player_from_id(sid).username)
+    #    ROOMS[cur_room_id].remove_player_id(sid)
+    #    SID_TO_ROOM.pop(sid)
+    #    send(ROOMS[cur_room_id].to_dic(), room=cur_room_id)
 
 @socketio.on('submit_words')
 def on_submit_words(data):
@@ -102,6 +102,16 @@ def on_submit_words(data):
     username = data[DATA_USERNAME]
     words = data[DATA_WORD_LIST]
     print ("RECEIVED MESSAGE: {} {} WORDS: {}".format(room_id, username, words))
+
+@socketio.on('change_team')
+def on_change_team(data):
+    username = data[DATA_USERNAME]
+    room_id = data[DATA_ROOM_ID]
+    print ("RECEIVED CHANGE TEAM: " + username)
+    game = ROOMS[room_id]
+    game.get_player(username).change_team()
+    print (json.dumps(game.to_dic()))
+    send(game.to_dic(), room=room_id)
              
 @socketio.on('leave')
 def on_leave(data):

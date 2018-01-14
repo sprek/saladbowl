@@ -53,9 +53,12 @@ class Saladbowl_game(object):
         else:
             tmp_player = Saladbowl_player(username, [player_id], False, self.player_counter)
             self.player_counter += 1
-            
-            if len(self.players_by_username) % 2 == 1:
+
+            # default team is blue
+            count_blue = [x.team for _,x in self.players_by_username.items()].count(Saladbowl_player.TEAM_BLUE)
+            if count_blue > len(self.players_by_username) / 2:
                 tmp_player.team = Saladbowl_player.TEAM_RED
+                
             self.players_by_username[username] = tmp_player
 
     def get_player(self, username):

@@ -44,7 +44,7 @@ export default new Vuex.Store({
       console.log(`GOT JOIN ROOM MSG: ${message.room_id}`);
     },
     SOCKET_ERROR(state, message) {
-      console.log(`GOT ERROR: ${message.error}`);
+      console.log(`GOT ERROR: ${message}`);
       state.error = message.error;
     },
     set_room_id(state, room_id) {

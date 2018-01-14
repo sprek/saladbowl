@@ -22,3 +22,9 @@ class Saladbowl_player(object):
             self.id_list.remove(player_id)
         except:
             print ("Unable to remove id from player: " + self.username)
+
+    def change_team(self):
+        if self.team == self.TEAM_BLUE:
+            self.team = self.TEAM_RED
+        else:
+            self.team = self.TEAM_BLUE

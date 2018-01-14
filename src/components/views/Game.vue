@@ -5,11 +5,17 @@
       <v-card>
         <v-container fluid>
           <v-layout row wrap>
-            <v-flex xs6 text-xs-left>
-              <h4>Logged in as: {{ username }}</h4>
+            <v-flex xs4 text-xs-left>
+              <h4>User: {{ username }}</h4>
             </v-flex>
-            <v-flex xs6 text-xs-right>
+            <v-flex xs4 text-xs-middle>
+              <v-btn label :color="playerColor" @click.stop="changeTeam"><h4>Team {{playerColor}}</h4></v-btn>
+            </v-flex>
+            <v-flex xs4 text-xs-right>
               <h4># Players: {{players.length}}</h4>
+            </v-flex>
+            <v-flex xs4 offset-xs4 text-xs-middle>
+              <h5>Click to change</h5>
             </v-flex>
           </v-layout row wrap>
         </v-container>
@@ -52,6 +58,7 @@ export default {
   },
   data() {
     return {
+      colorSwitch: true,
     };
   },
   // watch: {
@@ -70,8 +77,23 @@ export default {
   },
   computed: {
     ...mapState(['connected', 'room_id', 'error', 'players', 'username', 'game', 'player_teams']),
+    playerColor: function () {
+      const ix = this.players.indexOf(this.username);
+      return this.player_teams[ix];
+    },
+    playerColorLabel: function () {
+      const ix = this.players.indexOf(this.username);
+      return `Team ${this.player_teams[ix]}`;
+    },
   },
   methods: {
+    changeTeam() {
+      const params = {
+        username: this.username,
+        room_id: this.room_id,
+      };
+      this.$socket.emit('change_team', params);
+    },
   },
 };
 </script>
