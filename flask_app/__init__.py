@@ -101,7 +101,11 @@ def on_submit_words(data):
     room_id = data[DATA_ROOM_ID]
     username = data[DATA_USERNAME]
     words = data[DATA_WORD_LIST]
+    game = ROOMS[room_id]
+    game.players_by_username[username].submitted_words = True
+    game.word_list.extend([x.strip() for x in words.split(';')])
     print ("RECEIVED MESSAGE: {} {} WORDS: {}".format(room_id, username, words))
+    send(game.to_dic(), room=room_id)
 
 @socketio.on('change_team')
 def on_change_team(data):
@@ -112,31 +116,20 @@ def on_change_team(data):
     game.get_player(username).change_team()
     print (json.dumps(game.to_dic()))
     send(game.to_dic(), room=room_id)
+
+@socketio.on('start')
+def on_start(data):
+    room_id = data[DATA_ROOM_ID]
+    print ("RECEIVED START")
+    game = ROOMS[room_id]
+    game.game_state = Saladbowl_game.GS_ROUND1
+    send(game.to_dic(), room=room_id)
+    
              
 @socketio.on('leave')
 def on_leave(data):
     print ("LEFT ROOM: " + data['room'])
-    #room_id = data['room']
-    #user = data['username']
-    #print ("LEFT ROOM " + room_id + " USER: " + user)
-    #leave_room(room_id)
-    #game = ROOMS[room_id]
-    #try:
-    #    game.players.remove(user)
-    #except ValueError:
-    #    print ("User " + username + " doesn't exist")
-    #send(game.to_dic(), room=room_id)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)
 
-#def app(environ, start_response):
-#    """Simplest possible application object"""
-#    data = 'Hello, World!\n'
-#    status = '200 OK'
-#    response_headers = [
-#        ('Content-type','text/plain'),
-#        ('Content-Length', str(len(data)))
-#    ]
-#    start_response(status, response_headers)
-#    return iter([data])

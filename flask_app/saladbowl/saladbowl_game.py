@@ -1,33 +1,42 @@
 import saladbowl.saladbowl_player
 from saladbowl.saladbowl_player import Saladbowl_player
 
-GS_WAITING_FOR_WORDS="WAITING_FOR_WORDS"
-GS_WAITING_TO_START="WAITING_TO_START"
-GS_STARTED="STARTED"
-
 class Saladbowl_game(object):
+    GS_WAITING_TO_START="WAITING_TO_START"
+    GS_ROUND1="ROUND1";
+    GS_ROUND2="ROUND2";
+    GS_ROUND3="ROUND3";
+    GS_ROUND4="ROUND4";
+    GS_FINISHED="FINISHED";
     
     def __init__(self, room_id='', num_words_per_player=3, word_list=[]):
         self.room_id = room_id
         self.num_words_per_player = num_words_per_player
         self.word_list = word_list
         self.players_by_username = {}
-        self.game_state = GS_WAITING_FOR_WORDS
         self.player_counter = 0
-        if word_list:
-            # if we already have a word list, then the players just need to hit start
-            self.game_state = GS_WAITING_TO_START
+        self.game_state = self.GS_WAITING_TO_START
 
     def get_sorted_players(self):
         return sorted([x for _,x in self.players_by_username.items()])
 
     def to_dic(self):
+        players_dict = {}
+        for k,x in self.players_by_username.items():
+            players_dict[k] = {'username' : x.username,
+                               'submitted_words' : x.submitted_words,
+                               'team' : x.team}
+        print ("PLAYERS DICT: " + str(players_dict))
         return {
             "room_id": self.room_id,
-            "players": [x.username for x in self.get_sorted_players()],
-            "player_teams": [x.team for x in self.get_sorted_players()],
+            #"players": [x.username for x in self.get_sorted_players()],
+            #"player_teams": [x.team for x in self.get_sorted_players()],
+            "ordered_players": [x.username for x in self.get_sorted_players()],
             "word_list": self.word_list,
-            "game_state": self.game_state
+            "game_state": self.game_state,
+            "players": players_dict,
+            #"test" : {'user1': {'team':'user1_team', 'status': 'user1_status'},
+            #          'user2': {'tea':'user2_team', 'status':'user2_status'}},
         }
 
     def get_player_from_id(self, player_id):

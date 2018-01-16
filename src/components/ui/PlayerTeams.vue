@@ -2,29 +2,29 @@
 <v-container fluid>
   <v-layout row wrap>
     <v-flex xs12>
-      <!-- <v-list v-for="player in players">
-           {{ player }}
-           </v-list> -->
+      <h2>Waiting for:</h2>
+    </v-flex>
+    <v-flex xs12>
       <v-list>
-        <template v-for="n in players.length">
-          <!-- <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{n}}. {{players[n-1]}}</v-list-tile-title>
-          </v-list-tile-content>
-          </v-list-tile> -->
-          <v-chip label :color="player_teams[n-1]"><h2>{{n}}. {{players[n-1]}}</h2></v-chip>
+        <template v-for="cur_player in waitingPlayers">
+          <v-chip label :color="players[cur_player].team"><h2>{{cur_player}}</h2></v-chip>
         </template>
       </v-list>
     </v-flex>
+    <h2>Ready:</h2>
     <v-flex xs12>
-      <v-btn block class="mt-3" @click.stop="ready">Ready</v-btn>
+      <v-list>
+        <template v-for="cur_player in readyPlayers">
+          <v-chip label :color="players[cur_player].team"><h2>{{cur_player}}</h2></v-chip>
+        </template>
+      </v-list>
     </v-flex>
   </v-layout>
 </v-container>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
   name: 'player-teams',
@@ -34,14 +34,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(['username', 'players', 'player_teams']),
-  },
-  watch: {
-    // room_id() {
-    //   console.log(`SETTING ROOM ID: ${this.room_id}`);
-    //   // this.set_room_id(this.room_id);
-    //   this.$router.push({ name: 'Game', params: { room_id: this.room_id } });
-    // },
+    ...mapState(['username', 'players', 'ordered_players', 'game']),
+    ...mapGetters(['waitingPlayers', 'readyPlayers']),
   },
   methods: {
     // ...mapMutations(['set_username']),

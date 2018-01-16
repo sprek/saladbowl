@@ -6,9 +6,11 @@ import 'vuetify/dist/vuetify.css';
 import App from './App';
 import router from './router';
 import store from './store';
+import saladbowlHelpers from './SaladbowlHelpers'
 
 Vue.use(Vuetify);
 Vue.use(VueSocketio, socketio(`http://${location.host}`), store);
+Vue.use(saladbowlHelpers);
 
 new Vue({ // eslint-disable-line no-new
   el: '#app',
