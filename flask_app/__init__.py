@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, join_room, leave_room, send, emit
 import random, string
 from saladbowl.saladbowl_game import Saladbowl_game
 import json
+from saladbowl import saladbowl_sockets
 
 DATA_NUM_WORDS_PER_PLAYER="numWordsPerPlayer"
 DATA_USERNAME="username"
@@ -58,7 +59,7 @@ def on_create(data):
     #ROOMS[room_id] = {'num_people':3, 'room_id':room_id}
     print ("CREATED " + room_id)
     print (json.dumps(new_game.to_dic()))
-    emit ('join_room', new_game.to_dic())
+    emit ('join_room', saladbowl_sockets.msg_join(new_game))
     
 @socketio.on('join')
 def on_join(data):
@@ -82,7 +83,8 @@ def on_join(data):
         #emit ('join_room', game.to_dic())
         join_room(room_id)
         SID_TO_ROOM[sid] = room_id
-        send(ROOMS[room_id].to_dic(), room=room_id)
+        send (saladbowl_sockets.msg_join(ROOMS[room_id]), room=room_id)
+        #send(ROOMS[room_id].to_dic(), room=room_id)
         # need to create new channel
 
 @socketio.on('disconnect')

@@ -20,6 +20,9 @@ class Saladbowl_game(object):
     def get_sorted_players(self):
         return sorted([x for _,x in self.players_by_username.items()])
 
+    def get_sorted_player_names(self):
+        return [x.username for x in self.get_sorted_players()]
+
     def to_dic(self):
         players_dict = {}
         for k,x in self.players_by_username.items():
@@ -31,7 +34,7 @@ class Saladbowl_game(object):
             "room_id": self.room_id,
             #"players": [x.username for x in self.get_sorted_players()],
             #"player_teams": [x.team for x in self.get_sorted_players()],
-            "ordered_players": [x.username for x in self.get_sorted_players()],
+            "ordered_players": self.get_sorted_player_names(),
             "word_list": self.word_list,
             "game_state": self.game_state,
             "players": players_dict,
