@@ -72,7 +72,27 @@ export default new Vuex.Store({
       //console.log (`GOT TEST: ${message.test['user1']['team']}`);
       //console.log (`GOT TEST: ${message.players['asdf']['team']}`);
       console.log (`GOT ORDERED PLAYERS: ${message.ordered_players}`);
-      console.log(`GOT JOIN ROOM MSG: ${message.room_id} NUM PLAYERS: ${Object.keys(message.players).length}`);
+      console.log(`GOT JOIN ROOM MSG: ${message.room_id}`);
+    },
+    //SOCKET_JOIN_ROOM_CAST(state, message) {
+    //  state.game = message;
+    //  state.room_id = message.room_id;
+    //  state.players = message.players;
+    //  state.ordered_players = message.ordered_players;
+    //  state.game_state = message.game_state;
+    //  state.word_list = message.word_list;
+    //  state.error = null;
+    //  console.log(`GOT JOIN ROOM CAST MSG: ${message.room_id}`);
+    //},
+    SOCKET_GAME_UPDATE_CAST(state, message) {
+      state.game = message;
+      state.room_id = message.room_id;
+      state.players = message.players;
+      state.ordered_players = message.ordered_players;
+      state.game_state = message.game_state;
+      state.word_list = message.word_list;
+      state.error = null;
+      console.log(`GOT GAME UPDATE CAST MSG: ${message.room_id}`);
     },
     SOCKET_ERROR(state, message) {
       console.log(`GOT ERROR: ${message}`);

@@ -15,7 +15,7 @@ socketio = SocketIO(app)
 app.secret_key = b'FF\x90}\xdc\xc5\xaeaT\xd6\xbc\x86O\xa6B\xdd\xa2qp\x9e\xd2f\xe8\xe8'
 
 ROOMS = {}
-SID_TO_ROOM = {}
+#SID_TO_ROOM = {}
 
 @app.route('/stats')
 def stats():
@@ -55,11 +55,11 @@ def on_create(data):
     
     ROOMS[room_id] = new_game
     join_room(room_id)
-    SID_TO_ROOM[sid] = room_id
+    #SID_TO_ROOM[sid] = room_id
     #ROOMS[room_id] = {'num_people':3, 'room_id':room_id}
     print ("CREATED " + room_id)
     print (json.dumps(new_game.to_dic()))
-    emit ('join_room', saladbowl_sockets.msg_join(new_game))
+    emit (saladbowl_sockets.SOCKET_JOIN_ROOM, saladbowl_sockets.msg_join_room(new_game))
     
 @socketio.on('join')
 def on_join(data):
@@ -82,10 +82,9 @@ def on_join(data):
         print (json.dumps(game.to_dic()))
         #emit ('join_room', game.to_dic())
         join_room(room_id)
-        SID_TO_ROOM[sid] = room_id
-        send (saladbowl_sockets.msg_join(ROOMS[room_id]), room=room_id)
-        #send(ROOMS[room_id].to_dic(), room=room_id)
-        # need to create new channel
+        #SID_TO_ROOM[sid] = room_id
+        #emit (saladbowl_sockets.SOCKET_JOIN_ROOM_CAST, saladbowl_sockets.msg_join_room_cast(game), room=room_id)
+        emit (saladbowl_sockets.SOCKET_GAME_UPDATE_CAST, saladbowl_sockets.msg_game_update_cast(game), room=room_id)
 
 @socketio.on('disconnect')
 def on_disconnect():
@@ -107,7 +106,8 @@ def on_submit_words(data):
     game.players_by_username[username].submitted_words = True
     game.word_list.extend([x.strip() for x in words.split(';')])
     print ("RECEIVED MESSAGE: {} {} WORDS: {}".format(room_id, username, words))
-    send(game.to_dic(), room=room_id)
+    emit (saladbowl_sockets.SOCKET_GAME_UPDATE_CAST, saladbowl_sockets.msg_game_update_cast(game), room=room_id)
+    #send(game.to_dic(), room=room_id)
 
 @socketio.on('change_team')
 def on_change_team(data):
@@ -117,7 +117,7 @@ def on_change_team(data):
     game = ROOMS[room_id]
     game.get_player(username).change_team()
     print (json.dumps(game.to_dic()))
-    send(game.to_dic(), room=room_id)
+    emit (saladbowl_sockets.SOCKET_GAME_UPDATE_CAST, saladbowl_sockets.msg_game_update_cast(game), room=room_id)
 
 @socketio.on('start')
 def on_start(data):
@@ -125,12 +125,18 @@ def on_start(data):
     print ("RECEIVED START")
     game = ROOMS[room_id]
     game.game_state = Saladbowl_game.GS_ROUND1
-    send(game.to_dic(), room=room_id)
-    
-             
+    emit (saladbowl_sockets.SOCKET_GAME_UPDATE_CAST, saladbowl_sockets.msg_game_update_cast(game), room=room_id)
+
 @socketio.on('leave')
 def on_leave(data):
-    print ("LEFT ROOM: " + data['room'])
+    username = data[DATA_USERNAME]
+    room_id = data[DATA_ROOM_ID]
+    print ("RECEIVED LEAVE GAME: " + username)
+    
+    game = ROOMS[room_id]
+    game.remove_player(username)
+    print (json.dumps(game.to_dic()))
+    emit (saladbowl_sockets.SOCKET_GAME_UPDATE_CAST, saladbowl_sockets.msg_game_update_cast(game), room=room_id)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)

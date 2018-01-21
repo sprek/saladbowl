@@ -37,7 +37,7 @@ export default {
     room_id() {
       console.log(`SETTING ROOM ID: ${this.room_id}`);
       // this.set_room_id(this.room_id);
-      this.$router.push({ name: 'Game', params: { room_id: this.room_id } });
+      this.$router.push({ name: 'Game', params: { room_id: this.room_id }, query: {user: this.reqUsername}});
     },
   },
   methods: {

@@ -29,6 +29,9 @@ export default new Router({
       path: '/game/:room_id',
       name: 'Game',
       component: Game,
+      props: (route) => ({
+        user: route.query.user,
+      }),
     },
     {
       path: '/word_list',

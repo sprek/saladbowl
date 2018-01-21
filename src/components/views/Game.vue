@@ -1,5 +1,5 @@
 <template>
-<v-container fluid text-xs-center>
+<v-container v-if="this.room_id" fluid text-xs-center>
   <v-layout row wrap align-center>
     <v-flex xs12>
       <v-card>
@@ -41,8 +41,14 @@
         </v-container>
       </v-card>
     </v-flex>
-    <v-flex xs12>
+    <v-flex xs5>
       <v-btn block v-if="game_state == this.$sb_helpers.getConst('GS_WAITING_TO_START')" :disabled="!players[username].submitted_words" class="mt-3" color="primary" @click="startClick">Start Game</v-btn>
+    </v-flex>
+    <v-flex xs5 offset-xs2>
+      <v-btn block v-if="game_state == this.$sb_helpers.getConst('GS_WAITING_TO_START')" class="mt-3" @click="leaveClick">Leave Game</v-btn>
+    </v-flex>
+    <v-flex xs12>
+      <v-btn block v-if="game_state != this.$sb_helpers.getConst('GS_WAITING_TO_START')" class="mt-3" @click="leaveClick">Leave Game</v-btn>
     </v-flex>
   </v-layout>
 </v-container>
@@ -51,12 +57,13 @@
 <script>
 import WordSubmitForm from '@/components/ui/WordSubmitForm';
 import PlayerTeams from '@/components/ui/PlayerTeams';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 //import sb from '../../SaladbowlUtils';
 //import * as sb from '@/SaladbowlUtils';
 
 export default {
   name: 'game-board',
+  props: ['user'],
   components: {
     WordSubmitForm,
     PlayerTeams,
@@ -68,13 +75,20 @@ export default {
   },
   watch: {
     game() {
-      // if (this.game.players[this.username].submitted_words) {
-      // }
+      console.log ("GOT GAME UPDATE!");
     },
   },
   mounted() {
     if (!this.room_id) {
-      this.$router.push({ name: 'JoinGame', params: { reqRoomId: this.$route.params.room_id } });
+      console.log ("DONT HAVE ROOM ID")
+      console.log (`ROOM ID: ${this.$route.params.room_id} USER: ${this.user }`);
+      this.set_username(this.user);
+      const params = {
+        username: this.user,
+        room_id: this.$route.params.room_id,
+      };
+      this.$socket.emit('join', params);
+      //this.$router.push({ name: 'JoinGame', params: { reqRoomId: this.$route.params.room_id } });
     }
   },
   computed: {
@@ -87,6 +101,7 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(['set_username']),
     changeTeam() {
       const params = {
         username: this.username,
@@ -99,6 +114,14 @@ export default {
         room_id: this.room_id,
       };
       this.$socket.emit('start', params);
+    },
+    leaveClick() {
+      const params = {
+        room_id: this.room_id,
+        username: this.username,
+      };
+      this.$socket.emit('leave', params);
+      this.$router.push({ name: 'Home'});
     },
   },
 };

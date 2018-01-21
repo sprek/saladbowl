@@ -3,7 +3,6 @@ import unittest
 
 class TestSaladbowl(unittest.TestCase):
     def test_one(self):
-        saladbowl_sockets.test1()
         self.assertEqual(4,4)
         
 

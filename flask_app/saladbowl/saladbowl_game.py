@@ -93,3 +93,6 @@ class Saladbowl_game(object):
             self.players_by_username.pop(cur_player.username)
         return True
 
+    def remove_player(self, username):
+        self.players_by_username.pop(username)
+

@@ -3,7 +3,7 @@
   <v-navigation-drawer temporary v-model="drawer" fixed>
     <v-list>
       <v-divider></v-divider>
-      <v-list-tile v-for="item in items" :key="item.title" @click="">
+      <v-list-tile v-for="item in items" :key="item.title" :to="{ name: item.route }">
         <v-list-tile-action>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-tile-action>
@@ -47,9 +47,8 @@ export default {
       drawer: false,
       title: 'Salad Bowl',
       items: [
-        { title: 'Home', icon: 'home' },
-        { title: 'Word List', icon: 'list' },
-        { title: 'Games', icon: 'games' },
+        { title: 'Home', icon: 'home', route: 'Home' },
+        { title: 'Word List', icon: 'list', route: 'WordList' },
       ],
       toolbar_items: [
         { title: 'Word List', icon: 'list', route: 'WordList' },
