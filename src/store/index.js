@@ -15,6 +15,7 @@ export default new Vuex.Store({
     word_list: [],
     game_state: '',
     game: {},
+    round_num: 0,
   },
   getters: {
     readyPlayers: state => {
@@ -57,6 +58,7 @@ export default new Vuex.Store({
       // state.player_statuses = message.player_statuses;
       state.word_list = message.word_list;
       state.error = null;
+      state.round_num = message.round_num;
       console.log(`GOT MESSAGE ROOM2: ${message.room_id}`);
     },
     SOCKET_JOIN_ROOM(state, message) {
@@ -65,6 +67,7 @@ export default new Vuex.Store({
       state.players = message.players;
       state.ordered_players = message.ordered_players;
       state.game_state = message.game_state;
+      state.round_num = message.round_num;
       // state.player_teams = message.player_teams;
       // state.player_statuses = message.player_statuses;
       state.word_list = message.word_list;
@@ -91,6 +94,7 @@ export default new Vuex.Store({
       state.ordered_players = message.ordered_players;
       state.game_state = message.game_state;
       state.word_list = message.word_list;
+      state.round_num = message.round_num;
       state.error = null;
       console.log(`GOT GAME UPDATE CAST MSG: ${message.room_id}`);
     },

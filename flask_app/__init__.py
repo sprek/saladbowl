@@ -49,8 +49,7 @@ def on_create(data):
     cur_user=data[DATA_USERNAME]
     sid = request.sid
     new_game = Saladbowl_game(room_id=room_id,
-                              num_words_per_player=int(data[DATA_NUM_WORDS_PER_PLAYER]),
-                              word_list=[])
+                              num_words_per_player=int(data[DATA_NUM_WORDS_PER_PLAYER]))
     new_game.add_id_to_player(cur_user, sid)
     
     ROOMS[room_id] = new_game
@@ -124,7 +123,8 @@ def on_start(data):
     room_id = data[DATA_ROOM_ID]
     print ("RECEIVED START")
     game = ROOMS[room_id]
-    game.game_state = Saladbowl_game.GS_ROUND1
+    game.game_state = Saladbowl_game.GS_WAITING_ON_TURN
+    game.cur_player = random.choice(list(game.players_by_username.keys()))
     emit (saladbowl_sockets.SOCKET_GAME_UPDATE_CAST, saladbowl_sockets.msg_game_update_cast(game), room=room_id)
 
 @socketio.on('leave')

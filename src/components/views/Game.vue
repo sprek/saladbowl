@@ -40,6 +40,16 @@
           </v-layout row wrap>
         </v-container>
       </v-card>
+      <v-card class="mt-3" v-if="game_state != this.$sb_helpers.getConst('GS_WAITING_TO_START')">
+        <v-container fluid>
+          <v-layout row wrap text-xs-left>
+            <v-flex xs12>
+              <h1 class="white--text">Round {{round}}</h1>
+              <game-display></game-display>
+            </v-flex>
+          </v-layout row wrap>
+        </v-container>
+      </v-card>
     </v-flex>
     <v-flex xs5>
       <v-btn block v-if="game_state == this.$sb_helpers.getConst('GS_WAITING_TO_START')" :disabled="!players[username].submitted_words" class="mt-3" color="primary" @click="startClick">Start Game</v-btn>
@@ -57,6 +67,7 @@
 <script>
 import WordSubmitForm from '@/components/ui/WordSubmitForm';
 import PlayerTeams from '@/components/ui/PlayerTeams';
+import GameDisplay from '@/components/ui/GameDisplay';
 import { mapState, mapMutations } from 'vuex';
 //import sb from '../../SaladbowlUtils';
 //import * as sb from '@/SaladbowlUtils';
@@ -67,15 +78,31 @@ export default {
   components: {
     WordSubmitForm,
     PlayerTeams,
+    GameDisplay,
   },
   data() {
     return {
       colorSwitch: true,
+      round: 0,
     };
   },
   watch: {
     game() {
       console.log ("GOT GAME UPDATE!");
+      if (this.game.game_state != this.$sb_helpers.getConst('GS_WAITING_TO_START')) {
+        this.round = this.game.round_num;
+      }
+      // if (this.game.game_state == this.$sb_helpers.getConst('GS_ROUND1')) {
+      //   this.round = 1;
+      // } else if (this.game.game_state == this.$sb_helpers.getConst('GS_ROUND2')) {
+      //   this.round = 2;
+      // } else if (this.game.game_state == this.$sb_helpers.getConst('GS_ROUND3')) {
+      //   this.round = 3;
+      // } else if (this.game.game_state == this.$sb_helpers.getConst('GS_ROUND4')) {
+      //   this.round = 4;
+      // } else {
+      //   this.round = 0;
+      // }
     },
   },
   mounted() {
