@@ -30,6 +30,16 @@
           </v-layout row wrap>
         </v-container>
       </v-card>
+      <v-card class="mt-3" v-if="players[username].submitted_words">
+        <v-container fluid>
+          <v-layout row wrap text-xs-left>
+            <v-flex xs12>
+              <v-btn block v-if="!showPassAndPlay" @click="passAndPlayClick">Add pass & play player</v-btn>
+              <word-submit-form v-if="showPassAndPlay"></word-submit-form>
+            </v-flex>
+          </v-layout row wrap>
+        </v-container>
+      </v-card>
       <v-card class="mt-3" v-if="game_state == this.$sb_helpers.getConst('GS_WAITING_TO_START')">
         <v-container fluid>
           <v-layout row wrap text-xs-left>
@@ -84,6 +94,7 @@ export default {
     return {
       colorSwitch: true,
       round: 0,
+      showPassAndPlay: false,
     };
   },
   watch: {
@@ -150,6 +161,10 @@ export default {
       this.$socket.emit('leave', params);
       this.$router.push({ name: 'Home'});
     },
+    passAndPlayClick() {
+      this.showPassAndPlay = true;
+      // this.$socket.emit('pass_and_play_add');
+    }
   },
 };
 </script>
