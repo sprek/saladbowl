@@ -2,6 +2,9 @@
 <v-container v-if="this.room_id" fluid text-xs-center>
   <v-layout row wrap align-center>
     <v-flex xs12>
+      <v-dialog v-model="passPlayerDialog" max-width="600px">
+        <pass-and-play-player-form></pass-and-play-player-form>
+      </v-dialog>
       <v-card>
         <v-container fluid>
           <v-layout row wrap>
@@ -34,8 +37,7 @@
         <v-container fluid>
           <v-layout row wrap text-xs-left>
             <v-flex xs12>
-              <v-btn block v-if="!showPassAndPlay" @click="passAndPlayClick">Add pass & play player</v-btn>
-              <word-submit-form v-if="showPassAndPlay"></word-submit-form>
+              <v-btn block @click="passAndPlayClick">Add pass & play player</v-btn>
             </v-flex>
           </v-layout row wrap>
         </v-container>
@@ -78,6 +80,7 @@
 import WordSubmitForm from '@/components/ui/WordSubmitForm';
 import PlayerTeams from '@/components/ui/PlayerTeams';
 import GameDisplay from '@/components/ui/GameDisplay';
+import PassAndPlayPlayerForm from '@/components/ui/PassAndPlayPlayerForm';
 import { mapState, mapMutations } from 'vuex';
 //import sb from '../../SaladbowlUtils';
 //import * as sb from '@/SaladbowlUtils';
@@ -89,12 +92,13 @@ export default {
     WordSubmitForm,
     PlayerTeams,
     GameDisplay,
+    PassAndPlayPlayerForm,
   },
   data() {
     return {
+      passPlayerDialog: false,
       colorSwitch: true,
       round: 0,
-      showPassAndPlay: false,
     };
   },
   watch: {
@@ -162,7 +166,7 @@ export default {
       this.$router.push({ name: 'Home'});
     },
     passAndPlayClick() {
-      this.showPassAndPlay = true;
+      this.passPlayerDialog = true;
       // this.$socket.emit('pass_and_play_add');
     }
   },
