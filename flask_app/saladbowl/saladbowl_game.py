@@ -58,6 +58,7 @@ class Saladbowl_game(object):
             "game_state": self.game_state,
             "round_num": self.round_num,
             "players": players_dict,
+            "next_color": self.get_next_color(),
             #"test" : {'user1': {'team':'user1_team', 'status': 'user1_status'},
             #          'user2': {'tea':'user2_team', 'status':'user2_status'}},
         }
@@ -85,12 +86,7 @@ class Saladbowl_game(object):
         else:
             tmp_player = Saladbowl_player(username, [player_id], False, self.player_counter)
             self.player_counter += 1
-
-            # default team is blue
-            count_blue = [x.team for _,x in self.players_by_username.items()].count(Saladbowl_player.TEAM_BLUE)
-            if count_blue > len(self.players_by_username) / 2:
-                tmp_player.team = Saladbowl_player.TEAM_RED
-                
+            tmp_player.team = self.get_next_color()
             self.players_by_username[username] = tmp_player
 
     def get_player(self, username):
@@ -116,3 +112,9 @@ class Saladbowl_game(object):
     def remove_player(self, username):
         self.players_by_username.pop(username)
 
+
+    def get_next_color(self):
+        count_blue = [x.team for _,x in self.players_by_username.items()].count(Saladbowl_player.TEAM_BLUE)
+        if count_blue > len(self.players_by_username) / 2:
+            return Saladbowl_player.TEAM_RED
+        return Saladbowl_player.TEAM_BLUE

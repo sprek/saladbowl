@@ -16,6 +16,8 @@ export default new Vuex.Store({
     game_state: '',
     game: {},
     round_num: 0,
+    showAddPlayerDialog: false,
+    nextColor: '',
   },
   getters: {
     readyPlayers: state => {
@@ -59,6 +61,7 @@ export default new Vuex.Store({
       state.word_list = message.word_list;
       state.error = null;
       state.round_num = message.round_num;
+      state.nextColor = message.next_color;
       console.log(`GOT MESSAGE ROOM2: ${message.room_id}`);
     },
     SOCKET_JOIN_ROOM(state, message) {
@@ -68,6 +71,7 @@ export default new Vuex.Store({
       state.ordered_players = message.ordered_players;
       state.game_state = message.game_state;
       state.round_num = message.round_num;
+      state.nextColor = message.next_color;
       // state.player_teams = message.player_teams;
       // state.player_statuses = message.player_statuses;
       state.word_list = message.word_list;
@@ -76,6 +80,7 @@ export default new Vuex.Store({
       //console.log (`GOT TEST: ${message.players['asdf']['team']}`);
       console.log (`GOT ORDERED PLAYERS: ${message.ordered_players}`);
       console.log(`GOT JOIN ROOM MSG: ${message.room_id}`);
+      console.log(`PLAYERS OBJ: ${Object.keys(message.players)}`);
     },
     //SOCKET_JOIN_ROOM_CAST(state, message) {
     //  state.game = message;
@@ -95,6 +100,7 @@ export default new Vuex.Store({
       state.game_state = message.game_state;
       state.word_list = message.word_list;
       state.round_num = message.round_num;
+      state.nextColor = message.next_color;
       state.error = null;
       console.log(`GOT GAME UPDATE CAST MSG: ${message.room_id}`);
     },
@@ -111,5 +117,9 @@ export default new Vuex.Store({
     set_game(state, game) {
       state.game = game;
     },
+    set_showAddPlayerDialog(state, val) {
+      //console.log ("SETTING ADD PLAYER DIALOG TO: " 
+      state.showAddPlayerDialog = val;
+    }
   },
 });

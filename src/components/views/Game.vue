@@ -2,7 +2,7 @@
 <v-container v-if="this.room_id" fluid text-xs-center>
   <v-layout row wrap align-center>
     <v-flex xs12>
-      <v-dialog v-model="passPlayerDialog" max-width="600px">
+      <v-dialog v-model="passPlayerDialog" max-width="800px" persistent>
         <pass-and-play-player-form></pass-and-play-player-form>
       </v-dialog>
       <v-card>
@@ -33,11 +33,14 @@
           </v-layout row wrap>
         </v-container>
       </v-card>
-      <v-card class="mt-3" v-if="players[username].submitted_words">
+      <v-card class="mt-3">
         <v-container fluid>
           <v-layout row wrap text-xs-left>
             <v-flex xs12>
-              <v-btn block @click="passAndPlayClick">Add pass & play player</v-btn>
+              <h1 class="white--text">Pass and Play Players</h1>
+            </v-flex>
+            <v-flex xs12>
+              <v-btn @click="passAndPlayClick">Add Player</v-btn>
             </v-flex>
           </v-layout row wrap>
         </v-container>
@@ -82,8 +85,6 @@ import PlayerTeams from '@/components/ui/PlayerTeams';
 import GameDisplay from '@/components/ui/GameDisplay';
 import PassAndPlayPlayerForm from '@/components/ui/PassAndPlayPlayerForm';
 import { mapState, mapMutations } from 'vuex';
-//import sb from '../../SaladbowlUtils';
-//import * as sb from '@/SaladbowlUtils';
 
 export default {
   name: 'game-board',
@@ -119,6 +120,9 @@ export default {
       //   this.round = 0;
       // }
     },
+    showAddPlayerDialog() {
+      this.passPlayerDialog = this.showAddPlayerDialog;
+    },
   },
   mounted() {
     if (!this.room_id) {
@@ -134,7 +138,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['connected', 'room_id', 'error', 'players', 'username', 'game', 'ordered_players', 'game_state']),
+    ...mapState(['connected', 'room_id', 'error', 'players', 'username', 'game', 'ordered_players', 'game_state', 'showAddPlayerDialog', 'nextColor']),
     playerColor: function () {
       return this.players[this.username].team
     },
@@ -143,7 +147,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(['set_username']),
+    ...mapMutations(['set_username', 'set_showAddPlayerDialog']),
     changeTeam() {
       const params = {
         username: this.username,
@@ -166,9 +170,10 @@ export default {
       this.$router.push({ name: 'Home'});
     },
     passAndPlayClick() {
-      this.passPlayerDialog = true;
+      this.set_showAddPlayerDialog(true);
+      // this.passPlayerDialog = true;
       // this.$socket.emit('pass_and_play_add');
-    }
+    },
   },
 };
 </script>

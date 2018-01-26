@@ -9,6 +9,7 @@ DATA_NUM_WORDS_PER_PLAYER="numWordsPerPlayer"
 DATA_USERNAME="username"
 DATA_ROOM_ID="room_id"
 DATA_WORD_LIST="word_list"
+DATA_TEAM="team"
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -107,6 +108,21 @@ def on_submit_words(data):
     print ("RECEIVED MESSAGE: {} {} WORDS: {}".format(room_id, username, words))
     emit (saladbowl_sockets.SOCKET_GAME_UPDATE_CAST, saladbowl_sockets.msg_game_update_cast(game), room=room_id)
     #send(game.to_dic(), room=room_id)
+
+@socketio.on('submit_pass_and_play_player')
+def on_submit_pass_and_play_player(data):
+    sid = request.sid
+    room_id = data[DATA_ROOM_ID]
+    username = data[DATA_USERNAME]
+    words = data[DATA_WORD_LIST]
+    team = data[DATA_TEAM]
+    game = ROOMS[room_id]
+    game.add_id_to_player(username, sid)
+    new_player = game.get_player(username)
+    new_player.team = team
+    new_player.submitted_words = True
+    print ("ADDED PLAYER: " + username + " TO GAME")
+    emit (saladbowl_sockets.SOCKET_GAME_UPDATE_CAST, saladbowl_sockets.msg_game_update_cast(game), room=room_id)
 
 @socketio.on('change_team')
 def on_change_team(data):
